@@ -25,40 +25,40 @@ class OrderController extends Controller
     public function create(Request $request)
     {
 
-        $orders = new Order;
+        $order = new Order;
 
-        $orders->date= $request->date;
+        $order->customer_id= $request->customer_id;
 
-        $orders->save();
+        $order->save();
 
-        return response()->json($orders);
+        return response()->json($order);
     }
 
     public function show($id)
     {
-        $orders = Order::find($id);
+        $order = Order::find($id);
 
-        return response()->json($orders);
+        return response()->json($order);
     }
 
     public function update(Request $request, $id)
     { 
-        $orders= Order::find($id);
+        $order= Order::find($id);
 
-        $orders->date = $request->input('date');
-        $orders->save();
-        return response()->json($orders);
+        $order->customer_id = $request->customer_id;
+        $order->save();
+        return response()->json($order);
     }
 
     public function destroy($id)
     {
-        $orders = Order::find($id);
+        $order = Order::find($id);
 
-        if ($orders === null) {
+        if ($order === null) {
             return response()->json('order does not exist');
         }
 
-        $orders->delete();
+        $order->delete();
 
         return response()->json('product removed successfully');
     }
