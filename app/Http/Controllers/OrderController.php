@@ -41,6 +41,7 @@ class OrderController extends Controller
     public function show($id)
     {
         $order = Order::find($id);
+        $order->products = $order->products;
 
         return response()->json($order);
     }
@@ -75,5 +76,25 @@ class OrderController extends Controller
         }
 
         return response()->json($order->products);
+    }
+
+    public function createProducts($id, Request $request)
+    {
+        $order = Order::find($id);
+
+        $order->products()->attach($request->product_id, ['quantity' => $request->quantity]);
+
+        return response()->json($order->products);
+
+    }
+
+    public function destroyProducts($id, Request $request) 
+    {
+        $order = Order::find($id);
+
+        $order->products()->detach($request->product_id);
+
+        return response()->json($order->products);
+        
     }
 }

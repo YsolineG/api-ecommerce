@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Product;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 
 
 class ProductController extends Controller
@@ -17,6 +18,8 @@ class ProductController extends Controller
     {
      
      $products = Product::all();
+
+     $products = DB::table('products')->simplePaginate(15);
 
      return response()->json($products);
 
@@ -47,6 +50,7 @@ class ProductController extends Controller
     public function show($id)
     {
         $product = Product::find($id);
+        $product->categories = $product->categories;
 
         return response()->json($product);
     }
@@ -97,4 +101,6 @@ class ProductController extends Controller
 
         return response()->json('product removed successfully');
     }
+
+    
 }
