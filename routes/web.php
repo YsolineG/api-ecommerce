@@ -17,11 +17,14 @@ $router->get('/', function () use ($router) {
     return $router->app->version();
 });
 $router->group(['prefix'=>'api/v1'], function() use($router){
+    // Products
     $router->get('/products', 'ProductController@index');
     $router->post('/products', 'ProductController@create');
     $router->get('/products/{id}', 'ProductController@show');
     $router->put('/products/{id}', 'ProductController@update');
     $router->delete('/products/{id}', 'ProductController@destroy');
+
+    // Categories
     $router->get('/categories', 'CategoryController@index');
     $router->post('/categories', 'CategoryController@create');
     $router->get('/categories/{id}', 'CategoryController@show');
@@ -37,4 +40,5 @@ $router->group(['prefix'=>'api/v1'], function() use($router){
     $router->get('/orders/{id}', 'OrderController@show');
     $router->put('/orders/{id}', 'OrderController@update');
     $router->delete('/orders/{id}', 'OrderController@destroy');
+    $router->get('/orders/{id}/products', 'OrderController@showProducts');
 });

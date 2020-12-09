@@ -2,7 +2,8 @@
 
 namespace App\Http\Controllers;
 
-use App\Order;
+
+use App\Models\Order;
 use Illuminate\Http\Request;
 
 
@@ -24,6 +25,9 @@ class OrderController extends Controller
 
     public function create(Request $request)
     {
+        $this->validate($request, [
+            'customer_id' => 'required|exists:App\Models\Customer,id',
+        ]);
 
         $order = new Order;
 
@@ -60,6 +64,16 @@ class OrderController extends Controller
 
         $order->delete();
 
-        return response()->json('product removed successfully');
+        return response()->json('order removed successfully');
+    }
+
+    public function showProducts($id) {
+        $order = Order::find($id);
+
+        if ($order === null) {
+            return response()->json('order does not exist');
+        }
+
+        return response()->json($order->products);
     }
 }
