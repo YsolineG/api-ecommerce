@@ -41,6 +41,7 @@ class CategoryController extends Controller
     public function show($id)
     {
         $category = Category::find($id);
+        $category->products = $category->products;
 
         return response()->json($category);
     }
@@ -73,5 +74,25 @@ class CategoryController extends Controller
         $category->delete();
 
         return response()->json('category removed successfully');
+    }
+
+    public function showProducts($id) {
+        $category = Category::find($id);
+
+        if ($category === null) {
+            return response()->json('category$category does not exist');
+        }
+
+        return response()->json($category->products);
+    }
+
+    public function createProducts($id, Request $request)
+    {
+        $category = Category::find($id);
+
+        $category->categories()->attach($request->product_id);
+
+        return response()->json($category->products);
+
     }
 }

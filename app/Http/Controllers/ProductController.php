@@ -102,5 +102,23 @@ class ProductController extends Controller
         return response()->json('product removed successfully');
     }
 
-    
+    public function showCategories($id) {
+        $product = Product::find($id);
+
+        if ($product === null) {
+            return response()->json('product does not exist');
+        }
+
+        return response()->json($product->categories);
+    }
+
+    public function createCategories($id, Request $request)
+    {
+        $product = Product::find($id);
+
+        $product->categories()->attach($request->category_id);
+
+        return response()->json($product->categories);
+
+    }
 }

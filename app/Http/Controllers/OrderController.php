@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Order;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 
 
 class OrderController extends Controller
@@ -18,6 +19,7 @@ class OrderController extends Controller
     {
      
      $orders = Order::all();
+     $orders = DB::table('orders')->simplePaginate(15);
 
      return response()->json($orders);
 

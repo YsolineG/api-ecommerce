@@ -25,6 +25,7 @@ $router->group(['prefix'=>'api/v1'], function() use($router){
     $router->delete('/products/{id}', 'ProductController@destroy');
 
     $router->get('/products/{id}/categories', 'ProductController@showCategories');
+    $router->post('/products/{id}/categories', 'ProductController@createCategories');
 
     // Categories
     $router->get('/categories', 'CategoryController@index');
@@ -34,6 +35,7 @@ $router->group(['prefix'=>'api/v1'], function() use($router){
     $router->delete('/categories/{id}', 'CategoryController@destroy'); 
     
     $router->get('/categories/{id}/products', 'CategoryController@showProducts'); 
+    $router->post('/categories/{id}/products', 'CategoryController@postProducts'); 
     
     // Customers
     $router->get('/customers', 'CustomerController@index');
