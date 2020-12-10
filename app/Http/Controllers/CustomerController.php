@@ -101,6 +101,6 @@ class CustomerController extends Controller
 
         $customers->delete();
 
-        return response()->json('product removed successfully');
+        return response()->json('customer removed successfully');
     }
 }

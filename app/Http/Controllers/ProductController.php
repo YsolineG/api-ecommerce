@@ -17,9 +17,7 @@ class ProductController extends Controller
     public function index()
     {
      
-     $products = Product::all();
-
-     $products = DB::table('products')->simplePaginate(15);
+     $products = Product::paginate(15);
 
      return response()->json($products);
 
