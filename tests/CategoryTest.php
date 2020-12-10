@@ -5,31 +5,47 @@ use Laravel\Lumen\Testing\DatabaseTransactions;
 
 class CategoryTest extends TestCase
 {
-    use DatabaseMigrations;
+    // use DatabaseMigrations;
     /**
      * A basic test example.
      *
      * @return void
      */
-    public function testCategory()
+    public function testCreateCategory()
     {
         $category = ['name' => 'Switch'];
 
-        $updateCategory = ['name' => 'Playstation'];
-
        $this->json('POST', '/api/v1/categories', $category)
-            ->seeJson($category);
+            ->seeJson($category); 
+    }
+
+    public function testShowAllCategories()
+    {
+        $category = ['name' => 'Switch'];
 
         $this->json('GET', '/api/v1/categories', $category)
             ->seeJson($category);
+    }
+
+    public function testUpdateCategory()
+    {
+        $updateCategory = ['name' => 'Playstation'];
 
         $this->json('PUT', '/api/v1/categories/1', $updateCategory)  
             ->seeJson($updateCategory);
+    }
+
+    public function testShowCategory()
+    {
+        $updateCategory = ['name' => 'Playstation'];
 
         $this->json('GET', '/api/v1/categories/1', $updateCategory)  
             ->seeJson($updateCategory);
+    }
 
+    public function testDeleteCategory()
+    {
         $this->json('DELETE', '/api/v1/categories/1')
-            ->seeJson(['category removed successfully']); 
+            ->seeJson(['category removed successfully']);
     }
 }

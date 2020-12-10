@@ -76,6 +76,20 @@ class CategoryController extends Controller
         return response()->json('category removed successfully');
     }
 
+    public function createProducts($id, Request $request)
+    {
+        $this->validate($request, [
+            'product_id' => 'required|exists:App\Models\Product,id',
+        ]);
+    
+        $category = Category::find($id);
+
+        $category->products()->attach($request->product_id);
+
+        return response()->json($category->products);
+
+    }
+
     public function showProducts($id) {
         $category = Category::find($id);
 
@@ -86,13 +100,5 @@ class CategoryController extends Controller
         return response()->json($category->products);
     }
 
-    public function createProducts($id, Request $request)
-    {
-        $category = Category::find($id);
-
-        $category->categories()->attach($request->product_id);
-
-        return response()->json($category->products);
-
-    }
+    
 }

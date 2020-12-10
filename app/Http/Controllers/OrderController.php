@@ -52,6 +52,10 @@ class OrderController extends Controller
     { 
         $order= Order::find($id);
 
+        if ($order === null) {
+            return response()->json('order does not exist');
+        }
+
         $order->customer_id = $request->customer_id;
         $order->save();
         return response()->json($order);
@@ -82,6 +86,12 @@ class OrderController extends Controller
 
     public function createProducts($id, Request $request)
     {
+        $this->validate($request, [
+            'product_id' => 'required|exists:App\Models\Product,id',
+            'quantity' => 'required|integer',
+            'order_id' => 'required|exists:App\Models\Order,id'
+        ]);
+
         $order = Order::find($id);
 
         $order->products()->attach($request->product_id, ['quantity' => $request->quantity]);

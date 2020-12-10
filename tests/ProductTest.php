@@ -5,21 +5,40 @@ use Laravel\Lumen\Testing\DatabaseTransactions;
 
 class ProductTest extends TestCase
 {
-    use DatabaseMigrations;
+    // use DatabaseMigrations;
     /**
      * A basic test example.
      *
      * @return void
      */
-    public function testProduct()
+    public function testCreateProduct()
     {
         $product = [
             'name' =>'Amoung Us', 
-            'description' => 'jeu d\'ambiance multijoueur', 
+            'description' => 'jeu multijoueur', 
             'price' => 4, 
             'stock' => 2
         ];
 
+        $this->json('POST', '/api/v1/products', $product)
+            ->seeJson($product);
+    }
+
+    public function testShowAllProducts()
+    {
+        $product = [
+            'name' =>'Amoung Us', 
+            'description' => 'jeu multijoueur', 
+            'price' => 4, 
+            'stock' => 2
+        ];
+
+        $this->json('GET', '/api/v1/products', $product)
+            ->seeJson($product);
+    }
+
+    public function testUpdatePorduct()
+    {
         $updateProduct = [
             'name' => 'Animal Crossing',
             'description' => 'jeu de simulation de vie', 
@@ -27,22 +46,26 @@ class ProductTest extends TestCase
             'stock' => 2
         ];
 
-        $this->json('POST', '/api/v1/products', $product)
-            ->seeJson($product);
-
-        $this->json('GET', '/api/v1/products', $product)
-            ->seeJson($product);
-
         $this->json('PUT', '/api/v1/products/1', $updateProduct)  
             ->seeJson($updateProduct);
+    }
+
+    public function testShowProduct()
+    {
+        $updateProduct = [
+            'name' => 'Animal Crossing',
+            'description' => 'jeu de simulation de vie', 
+            'price' => 60, 
+            'stock' => 2
+        ];
 
         $this->json('GET', '/api/v1/products/1', $updateProduct)  
             ->seeJson($updateProduct);
+    }
 
+    public function testDeleteProduct()
+    {
         $this->json('DELETE', '/api/v1/products/1')
             ->seeJson(['product removed successfully']);
-
-        // $this->json('GET', '/api/v1/products/1/categories', $product)
-        //     ->seeJson($product);
     }
 }

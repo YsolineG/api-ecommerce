@@ -5,31 +5,71 @@ use Laravel\Lumen\Testing\DatabaseTransactions;
 
 class OrderTest extends TestCase
 {
-    use DatabaseMigrations;
+    // use DatabaseMigrations;
     /**
      * A basic test example.
      *
      * @return void
      */
-    public function testOrder()
+    
+    public function testCreateOrder()
     {
-        $order = ['customer_id' => 1];
-
-        $updateOrder = ['customer_id' => 2];
+        $order = [
+            'customer_id' => 1,
+            'product_id'=> 1,
+            'quantity' => 2
+        ];
 
         $this->json('POST', '/api/v1/orders', $order)
             ->seeJson($order);
+    
+    }
 
-        $this->json('GET', '/api/v1/orders', $order)
+    public function testShowAllOrder()
+    {
+        $order = [
+            'customer_id' => 1,
+            'product_id'=> 1,
+            'quantity' => 2
+        ];
+
+        $this->get('/api/v1/orders/')
             ->seeJson($order);
+    }
 
-        $this->json('PUT', '/api/v1/orders/1', $updateOrder)  
+    public function testUpdateOrder()
+    {
+        $updateOrder = [
+            'customer_id' => 1,
+            'product_id' => 1,
+            'quantity'=> 1,
+        ];
+
+        $this->json('PUT', '/api/v1/orders/1', $updateOrder)
             ->seeJson($updateOrder);
+    }
 
-        $this->json('GET', '/api/v1/orders/1', $updateOrder)  
+    public function testShowOrder()
+    {
+        $updateOrder = [
+            'customer_id' => 1,
+            'product_id' => 1,
+            'quantity' => 1,
+        ];
+
+        $this->get('/api/v1/orders/1')
             ->seeJson($updateOrder);
+    }
 
-        $this->json('DELETE', '/api/v1/orders/1')
-            ->seeJson(['order removed successfully']); 
+    public function testDeleteOrder()
+    {
+        $updateOrder = [
+            'customer_id' => 1,
+            'product_id' => 1,
+            'quantity' => 1
+        ];
+
+        $this->json('DELETE', '/api/v1/orders/1', $updateOrder)
+            ->seeJson($updateOrder);
     }
 }
