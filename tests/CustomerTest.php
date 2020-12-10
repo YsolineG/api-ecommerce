@@ -5,7 +5,14 @@ use Laravel\Lumen\Testing\DatabaseTransactions;
 
 class CustomerTest extends TestCase
 {
-    // use DatabaseMigrations;
+    use DatabaseMigrations;
+
+    public function setUp(): void
+    {
+        parent::setUp();
+        $this->artisan('db:seed');
+    }
+
     /**
      * A basic test example.
      *

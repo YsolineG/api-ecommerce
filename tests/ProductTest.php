@@ -2,42 +2,45 @@
 
 use Laravel\Lumen\Testing\DatabaseMigrations;
 use Laravel\Lumen\Testing\DatabaseTransactions;
+use App\Models\Product;
 
 class ProductTest extends TestCase
 {
-    // use DatabaseMigrations;
+    use DatabaseMigrations;
+
+    public function setUp(): void
+    {
+        parent::setUp();
+        // $this->artisan('db:seed');
+    }
+
     /**
      * A basic test example.
      *
      * @return void
      */
-    public function testCreateProduct()
+    public function testPostProduct()
     {
         $product = [
             'name' =>'Amoung Us', 
-            'description' => 'jeu multijoueur', 
-            'price' => 4, 
-            'stock' => 2
+        'description' => 'jeu multijoueur', 
+        'price' => 4, 
+        'stock' => 2
         ];
 
         $this->json('POST', '/api/v1/products', $product)
             ->seeJson($product);
     }
 
-    public function testShowAllProducts()
+    public function testGetProducts()
     {
-        $product = [
-            'name' =>'Amoung Us', 
-            'description' => 'jeu multijoueur', 
-            'price' => 4, 
-            'stock' => 2
-        ];
+        $products = Product::factory()->count(10)->create()->all();
 
-        $this->json('GET', '/api/v1/products', $product)
-            ->seeJson($product);
+        $this->json('GET', '/api/v1/products')
+            ->seeJson($products);
     }
 
-    public function testUpdatePorduct()
+    public function testPutProduct()
     {
         $updateProduct = [
             'name' => 'Animal Crossing',
@@ -50,7 +53,7 @@ class ProductTest extends TestCase
             ->seeJson($updateProduct);
     }
 
-    public function testShowProduct()
+    public function testGetProduct()
     {
         $updateProduct = [
             'name' => 'Animal Crossing',

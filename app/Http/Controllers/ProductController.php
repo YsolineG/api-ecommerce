@@ -48,6 +48,11 @@ class ProductController extends Controller
     public function show($id)
     {
         $product = Product::find($id);
+
+        if ($product === null) {
+            return response()->json('product does not exist');
+        }
+        
         $product->categories = $product->categories;
 
         return response()->json($product);
