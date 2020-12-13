@@ -6,13 +6,13 @@ use App\Models\Product;
 
 class ProductTest extends TestCase
 {
-    use DatabaseMigrations;
+    // use DatabaseMigrations;
 
-    public function setUp(): void
-    {
-        parent::setUp();
-        // $this->artisan('db:seed');
-    }
+    // public function setUp(): void
+    // {
+    //     parent::setUp();
+    //     // $this->artisan('db:seed');
+    // }
 
     /**
      * A basic test example.
@@ -34,10 +34,17 @@ class ProductTest extends TestCase
 
     public function testGetProducts()
     {
-        $products = Product::factory()->count(10)->create()->all();
+        // $products = Product::factory()->count(10)->create()->all();
 
-        $this->json('GET', '/api/v1/products')
-            ->seeJson($products);
+        $product = [
+            'name' =>'Amoung Us', 
+        'description' => 'jeu multijoueur', 
+        'price' => 4, 
+        'stock' => 2
+        ];
+
+        $this->json('GET', '/api/v1/products', $product)
+            ->seeJson($product);
     }
 
     public function testPutProduct()

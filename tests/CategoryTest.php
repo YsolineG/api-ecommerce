@@ -1,5 +1,6 @@
 <?php
 
+use App\Models\Category;
 use Laravel\Lumen\Testing\DatabaseMigrations;
 use Laravel\Lumen\Testing\DatabaseTransactions;
 
@@ -7,12 +8,12 @@ class CategoryTest extends TestCase
 {
     use DatabaseMigrations;
 
-    public function setUp(): void
-    {
-        parent::setUp();
-        $this->artisan('db:seed');
-    }
-    
+    // public function setUp(): void
+    // {
+    //     parent::setUp();
+    //     $this->artisan('db:seed');
+    // }
+
     /**
      * A basic test example.
      *
@@ -22,37 +23,51 @@ class CategoryTest extends TestCase
     {
         $category = ['name' => 'Switch'];
 
-       $this->json('POST', '/api/v1/categories', $category)
-            ->seeJson($category); 
+        $this->json('POST', '/api/v1/categories', $category)
+             ->seeJson($category);
     }
 
     public function testShowAllCategories()
     {
-        $category = ['name' => 'Switch'];
+        // create multiple categories
+        $categories = Category::factory()->count(4)->create();
 
-        $this->json('GET', '/api/v1/categories', $category)
-            ->seeJson($category);
+        $response = $this->json('GET', '/api/v1/categories');
+
+        foreach($categories as $category) {
+            $response->seeJson($category->toArray());
+        }
     }
 
     public function testUpdateCategory()
     {
-        $updateCategory = ['name' => 'Playstation'];
+        $existingCategory = Category::factory()->create();
 
-        $this->json('PUT', '/api/v1/categories/1', $updateCategory)  
-            ->seeJson($updateCategory);
+        $dataToUpdate = [
+            'name' => 'new category name'
+        ];
+
+        $this->json('PUT', '/api/v1/categories/'. $existingCategory->id, $dataToUpdate)
+            ->seeJson($dataToUpdate);
     }
 
     public function testShowCategory()
     {
-        $updateCategory = ['name' => 'Playstation'];
+        $category = Category::factory()->create();
 
-        $this->json('GET', '/api/v1/categories/1', $updateCategory)  
-            ->seeJson($updateCategory);
+        $this->json('GET', '/api/v1/categories/'. $category->id)
+            ->seeJson($category->toArray());
     }
 
     public function testDeleteCategory()
     {
-        $this->json('DELETE', '/api/v1/categories/1')
+        $category = Category::factory()->create();
+
+        $this->json('DELETE', '/api/v1/categories/'. $category->id)
             ->seeJson(['category removed successfully']);
+
+        $this->missingFromDatabase('categories', [
+            'id' => $category->id
+        ]);
     }
 }

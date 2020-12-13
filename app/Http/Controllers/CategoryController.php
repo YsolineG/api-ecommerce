@@ -15,7 +15,7 @@ class CategoryController extends Controller
      */
     public function index()
     {
-     
+
      $categories = Category::all();
 
      return response()->json($categories);
@@ -33,9 +33,11 @@ class CategoryController extends Controller
 
         $category->name= $request->name;
 
-        $category->save();
+        if($category->save()) {
+            return response()->json($category);
+        }
 
-        return response()->json($category);
+        return response()->json("Couldn't save category", 500);
     }
 
     public function show($id)
@@ -47,7 +49,7 @@ class CategoryController extends Controller
     }
 
     public function update(Request $request, $id)
-    { 
+    {
         $this->validate($request, [
             'name' => 'required|unique:categories|max:100',
         ]);
@@ -57,7 +59,7 @@ class CategoryController extends Controller
         if ($category === null) {
             return response()->json('category does not exist');
         }
-        
+
         $category->name = $request->name;
         $category->save();
         return response()->json($category);
@@ -81,7 +83,7 @@ class CategoryController extends Controller
         $this->validate($request, [
             'product_id' => 'required|exists:App\Models\Product,id',
         ]);
-    
+
         $category = Category::find($id);
 
         $category->products()->attach($request->product_id);
@@ -100,5 +102,5 @@ class CategoryController extends Controller
         return response()->json($category->products);
     }
 
-    
+
 }
