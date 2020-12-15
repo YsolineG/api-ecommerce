@@ -4,6 +4,7 @@ use Laravel\Lumen\Testing\DatabaseMigrations;
 use Laravel\Lumen\Testing\DatabaseTransactions;
 use App\Models\Order;
 use App\Models\Customer;
+use App\Models\Product;
 
 
 class OrderTest extends TestCase
@@ -33,7 +34,6 @@ class OrderTest extends TestCase
     public function testGetOrders()
     {
         $customers = Customer::factory()->count(10)->create();
-
         $this->json('GET','/api/v1/orders/')
             ->seeJson(['customer_id'=> $customers->id]);
     }
@@ -59,5 +59,27 @@ class OrderTest extends TestCase
             $this->missingFromDatabase('orders', [
             'id' => $order->id
         ]);
+    }
+
+    public function testPostOrderProduct()
+    {
+        $customer = Customer::factory()->create();
+
+        $product = Product::factory()->create();
+
+        $order = new Order;
+        $order->customer_id = $customer->id;
+        $order->save();
+
+        $this->json(
+                'POST', 
+                '/api/v1/orders/'.$order->id.'/products', 
+                ['customer_id' => $customer->id], 
+                ['product_id'=>$product->id], 
+                ['order_id'=>$order->id])
+            ->seeJson(
+                ['customer_id' => $customer->id], 
+                ['product_id'=>$product->id], 
+                ['order_id'=>$order->id]);
     }
 }

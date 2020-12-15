@@ -89,7 +89,7 @@ class OrderController extends Controller
 
     public function updateProduct()
     {
-
+        
     }
 
     public function destroyProduct($id, Request $request) 
