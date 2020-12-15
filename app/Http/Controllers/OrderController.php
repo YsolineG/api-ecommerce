@@ -48,19 +48,6 @@ class OrderController extends Controller
         return response()->json($order);
     }
 
-    public function update(Request $request, $id)
-    { 
-        $order= Order::find($id);
-
-        if ($order === null) {
-            return response()->json('order does not exist');
-        }
-
-        $order->customer_id = $request->customer_id;
-        $order->save();
-        return response()->json($order);
-    }
-
     public function destroy($id)
     {
         $order = Order::find($id);
@@ -84,7 +71,7 @@ class OrderController extends Controller
         return response()->json($order->products);
     }
 
-    public function createProducts($id, Request $request)
+    public function createProduct($id, Request $request)
     {
         $this->validate($request, [
             'product_id' => 'required|exists:App\Models\Product,id',
@@ -100,7 +87,12 @@ class OrderController extends Controller
 
     }
 
-    public function destroyProducts($id, Request $request) 
+    public function updateProduct()
+    {
+
+    }
+
+    public function destroyProduct($id, Request $request) 
     {
         $order = Order::find($id);
 

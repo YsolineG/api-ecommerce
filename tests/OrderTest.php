@@ -30,63 +30,34 @@ class OrderTest extends TestCase
             ->seeJson(['customer_id' => $customer->id]);
     }
 
-    public function testShowAllOrder()
+    public function testGetOrders()
     {
-        $order = [
-            'customer_id' => 1,
-            'product_id'=> 1,
-            'quantity' => 2
-        ];
+        $customers = Customer::factory()->count(10)->create();
 
-        $this->get('/api/v1/orders/')
-            ->seeJson($order);
+        $this->json('GET','/api/v1/orders/')
+            ->seeJson(['customer_id'=> $customers->id]);
     }
 
-    public function testUpdateOrder()
+    public function testGetOrder()
     {
-        $updateOrder = [
-            'customer_id' => 1,
-            'product_id' => 1,
-            'quantity'=> 1,
-        ];
-
-        $this->json('PUT', '/api/v1/orders/1', $updateOrder)
-            ->seeJson($updateOrder);
-    }
-
-    public function testShowOrder()
-    {
-        $updateOrder = [
-            'customer_id' => 1,
-            'product_id' => 1,
-            'quantity' => 1,
-        ];
+        $customers = Customer::factory()->create();
 
         $this->get('/api/v1/orders/1')
-            ->seeJson($updateOrder);
+            ->seeJson();
     }
-
-    // public function testDeleteOrder()
-    // {
-    //     $updateOrder = [
-    //         'customer_id' => 1,
-    //         'product_id' => 1,
-    //         'quantity' => 1
-    //     ];
-
-    //     $this->json('DELETE', '/api/v1/orders/1', $updateOrder)
-    //         ->seeJson($updateOrder);
-    // }
 
     public function testDeleteOrder()
     {
         $customer = Customer::factory()->create();
+        $order = new Order;
+        $order->customer_id = $customer->id;
+        $order->save();
 
-        $this->json('DELETE', '/api/v1/orders/1')
+        $this->json('DELETE', '/api/v1/orders/'. $order->id)
             ->seeJson(['order removed successfully']);
             
-            $this->missingFromDatabase('customers', [
-            'id' => $customer->id
+            $this->missingFromDatabase('orders', [
+            'id' => $order->id
         ]);
     }
 }

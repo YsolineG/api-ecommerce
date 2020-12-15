@@ -48,7 +48,6 @@ $router->group(['prefix'=>'api/v1'], function() use($router){
     $router->get('/orders', 'OrderController@index');
     $router->post('/orders', 'OrderController@create');
     $router->get('/orders/{id}', 'OrderController@show');
-    $router->put('/orders/{id}', 'OrderController@update');
     $router->delete('/orders/{id}', 'OrderController@destroy');
 
     $router->get('/orders/{id}/products', 'OrderController@showProducts');
