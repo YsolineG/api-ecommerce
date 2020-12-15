@@ -5,7 +5,7 @@ namespace Database\Factories;
 use App\Models\Order;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
-class CustomerFactory extends Factory
+class OrderFactory extends Factory
 {
     /**
      * The name of the factory's corresponding model.
@@ -22,7 +22,7 @@ class CustomerFactory extends Factory
     public function definition()
     {
         return [
-            
+            'quantity' => $this->faker->randomNumber(1, false)
         ];
     }
 }

@@ -67,6 +67,8 @@ class OrderTest extends TestCase
 
         $product = Product::factory()->create();
 
+        $order = Order::factory()->create();
+
         $order = new Order;
         $order->customer_id = $customer->id;
         $order->save();
@@ -74,12 +76,17 @@ class OrderTest extends TestCase
         $this->json(
                 'POST', 
                 '/api/v1/orders/'.$order->id.'/products', 
-                ['customer_id' => $customer->id], 
+                // ['customer_id' => $customer->id], 
                 ['product_id'=>$product->id], 
                 ['order_id'=>$order->id])
             ->seeJson(
-                ['customer_id' => $customer->id], 
+                // ['customer_id' => $customer->id], 
                 ['product_id'=>$product->id], 
                 ['order_id'=>$order->id]);
     }
+
+    // public function testDeleteOrderProduct()
+    // {
+
+    // }
 }

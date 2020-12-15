@@ -87,14 +87,38 @@ class OrderController extends Controller
 
     }
 
-    public function updateProduct()
+    public function updateProduct($id, Request $request)
     {
-        
+        $this->validate($request, [
+            'product_id' => 'required|exists:App\Models\Product,id',
+            'quantity' => 'required|integer',
+        ]);
+
+        $order = Order::find($id);
+
+        if ($order === null) {
+            return response()->json('order does not exist');
+        }
+
+        if(!empty($request->quantity) && !empty($request->product_id)){
+            $this->validate($request, [
+                'product_id' => 'required|exists:App\Models\Product,id',
+                'quantity' => 'required|integer',
+            ]);
+
+            $order->products()->attach($request->product_id, ['quantity' => $request->quantity]);
+        }
+
+        return response()->json($order);
     }
 
     public function destroyProduct($id, Request $request) 
     {
         $order = Order::find($id);
+
+        if ($order === null) {
+            return response()->json('order does not exist');
+        }
 
         $order->products()->detach($request->product_id);
 

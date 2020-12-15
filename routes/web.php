@@ -51,6 +51,7 @@ $router->group(['prefix'=>'api/v1'], function() use($router){
     $router->delete('/orders/{id}', 'OrderController@destroy');
 
     $router->get('/orders/{id}/products', 'OrderController@showProducts');
-    $router->post('/orders/{id}/products', 'OrderController@createProducts');
-    $router->delete('/orders/{id}/products', 'OrderController@destroyProducts');
+    $router->post('/orders/{id}/products', 'OrderController@createProduct');
+    $router->put('/orders/{id}/products', 'OrderController@updateProduct');
+    $router->delete('/orders/{id}/products', 'OrderController@destroyProduct');
 });
