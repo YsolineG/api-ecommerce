@@ -78,7 +78,7 @@ class CategoryController extends Controller
         return response()->json('category removed successfully');
     }
 
-    public function createProducts($id, Request $request)
+    public function createProduct($id, Request $request)
     {
         $this->validate($request, [
             'product_id' => 'required|exists:App\Models\Product,id',
@@ -92,11 +92,12 @@ class CategoryController extends Controller
 
     }
 
-    public function showProducts($id) {
+    public function showProducts($id) 
+    {
         $category = Category::find($id);
 
         if ($category === null) {
-            return response()->json('category$category does not exist');
+            return response()->json('category does not exist');
         }
 
         return response()->json($category->products);

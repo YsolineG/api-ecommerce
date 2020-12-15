@@ -3,10 +3,11 @@
 use Laravel\Lumen\Testing\DatabaseMigrations;
 use Laravel\Lumen\Testing\DatabaseTransactions;
 use App\Models\Product;
+use App\Models\Category;
 
 class ProductTest extends TestCase
 {
-    // use DatabaseMigrations;
+    use DatabaseMigrations;
 
     // public function setUp(): void
     // {
@@ -23,9 +24,9 @@ class ProductTest extends TestCase
     {
         $product = [
             'name' =>'Amoung Us', 
-        'description' => 'jeu multijoueur', 
-        'price' => 4, 
-        'stock' => 2
+            'description' => 'jeu multijoueur', 
+            'price' => 4, 
+            'stock' => 2
         ];
 
         $this->json('POST', '/api/v1/products', $product)
@@ -34,48 +35,57 @@ class ProductTest extends TestCase
 
     public function testGetProducts()
     {
-        // $products = Product::factory()->count(10)->create()->all();
+        $products = Product::factory()->count(10)->create();
 
-        $product = [
-            'name' =>'Amoung Us', 
-        'description' => 'jeu multijoueur', 
-        'price' => 4, 
-        'stock' => 2
-        ];
+        $response = $this->json('GET', '/api/v1/products');
 
-        $this->json('GET', '/api/v1/products', $product)
-            ->seeJson($product);
+        foreach($products as $product) {
+            $response->seeJson($product->toArray());
+        }
     }
 
     public function testPutProduct()
     {
-        $updateProduct = [
-            'name' => 'Animal Crossing',
-            'description' => 'jeu de simulation de vie', 
-            'price' => 60, 
-            'stock' => 2
-        ];
+        $existingProduct = Product::factory()->create();
 
-        $this->json('PUT', '/api/v1/products/1', $updateProduct)  
-            ->seeJson($updateProduct);
+        $dataToUpdate = [
+            'name' => 'new product name',
+            'description' => 'new product description',
+            'price' => 20,
+            'stock' => 40
+        ];
+        
+        $this->json('PUT', '/api/v1/products/'. $existingProduct->id, $dataToUpdate)  
+            ->seeJson($dataToUpdate);
     }
 
     public function testGetProduct()
     {
-        $updateProduct = [
-            'name' => 'Animal Crossing',
-            'description' => 'jeu de simulation de vie', 
-            'price' => 60, 
-            'stock' => 2
-        ];
+        $product = Product::factory()->create();
 
-        $this->json('GET', '/api/v1/products/1', $updateProduct)  
-            ->seeJson($updateProduct);
+        $this->json('GET', '/api/v1/products/'. $product->id)  
+            ->seeJson($product->toArray());
     }
 
     public function testDeleteProduct()
     {
-        $this->json('DELETE', '/api/v1/products/1')
+        $product = Product::factory()->create();
+
+        $this->json('DELETE', '/api/v1/products/'. $product->id)
             ->seeJson(['product removed successfully']);
+
+        $this->missingFromDatabase('products', [
+            'id' => $product->id
+        ]);
+    }
+
+    public function testPostProductCategory()
+    {
+        $category = Category::factory()->create();
+
+        $product = Product::factory()->create(); 
+
+        $this->json('POST', '/api/v1/products/'.$product->id.'/categories', ['category_id' => $category->id])
+            ->seeJson(['category_id' => $category->id]);
     }
 }

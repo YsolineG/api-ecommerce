@@ -2,10 +2,11 @@
 
 use Laravel\Lumen\Testing\DatabaseMigrations;
 use Laravel\Lumen\Testing\DatabaseTransactions;
+use App\Models\Customer;
 
 class CustomerTest extends TestCase
 {
-    // use DatabaseMigrations;
+    use DatabaseMigrations;
 
     // public function setUp(): void
     // {
@@ -18,7 +19,7 @@ class CustomerTest extends TestCase
      *
      * @return void
      */
-    public function testCreateCustomer()
+    public function testPostCustomer()
     {
         $customer = [
             'name' => 'Ganster',
@@ -31,48 +32,49 @@ class CustomerTest extends TestCase
             ->seeJson($customer);
     }
 
-    public function testShowAllCustomers()
+    public function testGetCustomers()
     {
-        $customer = [
-            'name' => 'Ganster',
-            'firstname' => 'Ysoline',
-            'email' => 'ysoline.ganster@gmail.com',
-            'adress' => 'Reims'
-        ];
+        $customers = Customer::factory()->count(10)->create();
 
-        $this->json('GET', '/api/v1/customers', $customer)
-            ->seeJson($customer);
+        $response = $this->json('GET', '/api/v1/customers');
+
+        foreach($customers as $customer) {
+            $response->seeJson($customer->toArray());
+        }
     }
 
-    public function testUpdateCustomer()
+    public function testPutCustomer()
     {
-        $updateCustomer = [
-            'name' => 'Halin',
-            'firstname' => 'Jérémy',
-            'email' => 'jeremy.halin@gmail.com',
-            'adress' => 'Reims'
+        $existingCustomer = Customer::factory()->create();
+
+        $dataToUpdate = [
+            'name'=>'New customer name',
+            'firstname'=>'New customer firstname',
+            'email'=>'newcustomeremail@gmail.com',
+            'adress'=>'New customer adress'
         ];
 
-        $this->json('PUT', '/api/v1/customers/1', $updateCustomer)  
-            ->seeJson($updateCustomer);
+        $this->json('PUT', '/api/v1/customers/'. $existingCustomer->id, $dataToUpdate)  
+            ->seeJson($dataToUpdate);
     }
 
-    public function testShowCustomer()
+    public function testGetCustomer()
     {
-        $updateCustomer = [
-            'name' => 'Halin',
-            'firstname' => 'Jérémy',
-            'email' => 'jeremy.halin@gmail.com',
-            'adress' => 'Reims'
-        ];
+        $customer = Customer::factory()->create();
 
-        $this->json('GET', '/api/v1/customers/1', $updateCustomer)  
-            ->seeJson($updateCustomer);
+        $this->json('GET', '/api/v1/customers/'. $customer->id)  
+            ->seeJson($customer->toArray());
     }
 
     public function testDeleteCustomer()
     {
-        $this->json('DELETE', '/api/v1/customers/1')
+        $customer = Customer::factory()->create();
+
+        $this->json('DELETE', '/api/v1/customers/'. $customer->id)
             ->seeJson(['customer removed successfully']);
+
+        $this->missingFromDatabase('customers', [
+            'id' => $customer->id
+        ]);
     }
 }

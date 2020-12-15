@@ -1,5 +1,6 @@
 <?php
 
+use App\Models\Product;
 use App\Models\Category;
 use Laravel\Lumen\Testing\DatabaseMigrations;
 use Laravel\Lumen\Testing\DatabaseTransactions;
@@ -19,7 +20,7 @@ class CategoryTest extends TestCase
      *
      * @return void
      */
-    public function testCreateCategory()
+    public function testPostCategory()
     {
         $category = ['name' => 'Switch'];
 
@@ -27,7 +28,7 @@ class CategoryTest extends TestCase
              ->seeJson($category);
     }
 
-    public function testShowAllCategories()
+    public function testGetCategories()
     {
         // create multiple categories
         $categories = Category::factory()->count(4)->create();
@@ -39,7 +40,7 @@ class CategoryTest extends TestCase
         }
     }
 
-    public function testUpdateCategory()
+    public function testPutCategory()
     {
         $existingCategory = Category::factory()->create();
 
@@ -51,7 +52,7 @@ class CategoryTest extends TestCase
             ->seeJson($dataToUpdate);
     }
 
-    public function testShowCategory()
+    public function testGetCategory()
     {
         $category = Category::factory()->create();
 
@@ -69,5 +70,25 @@ class CategoryTest extends TestCase
         $this->missingFromDatabase('categories', [
             'id' => $category->id
         ]);
+    }
+
+    public function testPostCategoryProduct()
+    {
+        $product = Product::factory()->create();
+
+        $category = Category::factory()->create(); 
+
+        $this->json('POST', '/api/v1/categories/'.$category->id.'/products', ['product_id' => $product->id])
+            ->seeJson(['product_id' => $product->id]);
+    }
+
+    public function testGetCategoryProducts()
+    {
+        $products = Product::factory()->count(10)->create();
+
+        $category = Category::factory()->create();
+
+        $this->json('GET', '/api/v1/categories/'.$category->id.'/products')
+            ->seeJson([$products->id]);
     }
 }

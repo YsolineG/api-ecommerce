@@ -2,34 +2,32 @@
 
 use Laravel\Lumen\Testing\DatabaseMigrations;
 use Laravel\Lumen\Testing\DatabaseTransactions;
+use App\Models\Order;
+use App\Models\Customer;
+
 
 class OrderTest extends TestCase
 {
     use DatabaseMigrations;
     
-    public function setUp(): void
-    {
-        parent::setUp();
-        $this->artisan('db:seed');
-    }
+    // public function setUp(): void
+    // {
+    //     parent::setUp();
+    //     $this->artisan('db:seed');
+    // }
     
     /**
      * A basic test example.
      *
      * @return void
      */
-    
-    public function testCreateOrder()
-    {
-        $order = [
-            'customer_id' => 1,
-            'product_id'=> 1,
-            'quantity' => 2
-        ];
 
-        $this->json('POST', '/api/v1/orders', $order)
-            ->seeJson($order);
-    
+    public function testPostOrder()
+    {
+        $customer = Customer::factory()->create();
+
+        $this->json('POST', '/api/v1/orders/', ['customer_id' => $customer->id])
+            ->seeJson(['customer_id' => $customer->id]);
     }
 
     public function testShowAllOrder()
@@ -68,15 +66,27 @@ class OrderTest extends TestCase
             ->seeJson($updateOrder);
     }
 
+    // public function testDeleteOrder()
+    // {
+    //     $updateOrder = [
+    //         'customer_id' => 1,
+    //         'product_id' => 1,
+    //         'quantity' => 1
+    //     ];
+
+    //     $this->json('DELETE', '/api/v1/orders/1', $updateOrder)
+    //         ->seeJson($updateOrder);
+    // }
+
     public function testDeleteOrder()
     {
-        $updateOrder = [
-            'customer_id' => 1,
-            'product_id' => 1,
-            'quantity' => 1
-        ];
+        $customer = Customer::factory()->create();
 
-        $this->json('DELETE', '/api/v1/orders/1', $updateOrder)
-            ->seeJson($updateOrder);
+        $this->json('DELETE', '/api/v1/orders/1')
+            ->seeJson(['order removed successfully']);
+            
+            $this->missingFromDatabase('customers', [
+            'id' => $customer->id
+        ]);
     }
 }

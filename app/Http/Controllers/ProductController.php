@@ -88,6 +88,13 @@ class ProductController extends Controller
             $product->description = $request->description;
         }
 
+        if(!empty($request->stock)){
+            $this->validate($request, [
+                'stock' => 'required|integer',
+            ]);
+            $product->stock = $request->stock;
+        }
+
         $product->save();
         return response()->json($product);
     }
