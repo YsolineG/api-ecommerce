@@ -76,7 +76,6 @@ class OrderController extends Controller
         $this->validate($request, [
             'product_id' => 'required|exists:App\Models\Product,id',
             'quantity' => 'required|integer',
-            'order_id' => 'required|exists:App\Models\Order,id'
         ]);
 
         $order = Order::find($id);

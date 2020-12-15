@@ -10,13 +10,13 @@ use App\Models\Product;
 class OrderTest extends TestCase
 {
     use DatabaseMigrations;
-    
+
     // public function setUp(): void
     // {
     //     parent::setUp();
     //     $this->artisan('db:seed');
     // }
-    
+
     /**
      * A basic test example.
      *
@@ -55,7 +55,7 @@ class OrderTest extends TestCase
 
         $this->json('DELETE', '/api/v1/orders/'. $order->id)
             ->seeJson(['order removed successfully']);
-            
+
             $this->missingFromDatabase('orders', [
             'id' => $order->id
         ]);
@@ -63,30 +63,18 @@ class OrderTest extends TestCase
 
     public function testPostOrderProduct()
     {
+        // création d'un client
         $customer = Customer::factory()->create();
 
+        // création d'une commande pour un client
+        $order = Order::factory()->create([
+            'customer_id' => $customer->id
+        ]);
+
+        // création du produit que l'on souhaite rattacher à la commande
         $product = Product::factory()->create();
 
-        $order = Order::factory()->create();
-
-        $order = new Order;
-        $order->customer_id = $customer->id;
-        $order->save();
-
-        $this->json(
-                'POST', 
-                '/api/v1/orders/'.$order->id.'/products', 
-                // ['customer_id' => $customer->id], 
-                ['product_id'=>$product->id], 
-                ['order_id'=>$order->id])
-            ->seeJson(
-                // ['customer_id' => $customer->id], 
-                ['product_id'=>$product->id], 
-                ['order_id'=>$order->id]);
+        $this->json('POST', '/api/v1/orders/'.$order->id.'/products', ['product_id'=>$product->id, 'quantity'=>4])
+            ->seeJson(['product_id'=>$product->id, 'quantity'=>4]);
     }
-
-    // public function testDeleteOrderProduct()
-    // {
-
-    // }
 }

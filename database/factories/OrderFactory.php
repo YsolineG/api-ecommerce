@@ -22,7 +22,7 @@ class OrderFactory extends Factory
     public function definition()
     {
         return [
-            'quantity' => $this->faker->randomNumber(1, false)
+            
         ];
     }
 }
