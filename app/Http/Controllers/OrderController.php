@@ -18,8 +18,7 @@ class OrderController extends Controller
     public function index()
     {
      
-     $orders = Order::all();
-     $orders = DB::table('orders')->simplePaginate(15);
+     $orders = Order::paginate(15);
 
      return response()->json($orders);
 
@@ -61,22 +60,18 @@ class OrderController extends Controller
         return response()->json('order removed successfully');
     }
 
-    public function showProducts($id) {
-        $order = Order::find($id);
-
-        if ($order === null) {
-            return response()->json('order does not exist');
-        }
-
-        return response()->json($order->products);
-    }
-
     public function createProduct($id, Request $request)
     {
         $this->validate($request, [
             'product_id' => 'required|exists:App\Models\Product,id',
             'quantity' => 'required|integer',
         ]);
+
+        $order = Order::find($id);
+
+        if ($order === null) {
+            return response()->json('order does not exist');
+        }
 
         $order = Order::find($id);
 
@@ -108,7 +103,7 @@ class OrderController extends Controller
             $order->products()->attach($request->product_id, ['quantity' => $request->quantity]);
         }
 
-        return response()->json($order);
+        return response()->json($order->products);
     }
 
     public function destroyProduct($id, Request $request) 
@@ -121,7 +116,6 @@ class OrderController extends Controller
 
         $order->products()->detach($request->product_id);
 
-        return response()->json($order->products);
-        
+        return response()->json('product removed successfully');
     }
 }

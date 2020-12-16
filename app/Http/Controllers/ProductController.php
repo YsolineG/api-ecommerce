@@ -125,14 +125,4 @@ class ProductController extends Controller
         return response()->json($product->categories);
 
     }
-
-    public function showCategories($id) {
-        $product = Product::find($id);
-
-        if ($product === null) {
-            return response()->json('product does not exist');
-        }
-
-        return response()->json($product->categories);
-    }
 }

@@ -31,19 +31,31 @@ class OrderTest extends TestCase
             ->seeJson(['customer_id' => $customer->id]);
     }
 
-    public function testGetOrders()
+    public function testGetAllOrders()
     {
-        $customers = Customer::factory()->count(10)->create();
-        $this->json('GET','/api/v1/orders/')
-            ->seeJson(['customer_id'=> $customers->id]);
+        $customer = Customer::factory()->create();
+        
+        $orders = Order::factory()->count(4)->create([
+            'customer_id' => $customer->id
+        ]);
+
+        $response = $this->json('GET', '/api/v1/orders');
+        foreach($orders as $order) {
+            $response->seeJson($order->toArray());
+        }
+        
     }
 
     public function testGetOrder()
     {
-        $customers = Customer::factory()->create();
+        $customer = Customer::factory()->create();
 
-        $this->get('/api/v1/orders/1')
-            ->seeJson();
+        $order = Order::factory()->create([
+            'customer_id' => $customer->id
+        ]);
+
+        $this->get('/api/v1/orders/'. $order->id)
+            ->seeJson($order->toArray);
     }
 
     public function testDeleteOrder()
@@ -77,4 +89,35 @@ class OrderTest extends TestCase
         $this->json('POST', '/api/v1/orders/'.$order->id.'/products', ['product_id'=>$product->id, 'quantity'=>4])
             ->seeJson(['product_id'=>$product->id, 'quantity'=>4]);
     }
+
+    public function testPutOrderProduct()
+    {
+        $existingCustomer = Customer::factory()->create();
+
+        $existingOrder = Order::factory()->create([
+            'customer_id' => $existingCustomer->id
+        ]);
+
+        $existingProduct = Product::factory()->create();
+
+        $dataToUpdate = [
+            'product_id' => $existingProduct->id,
+            'quantity' => 6
+        ];
+
+        $this->json('PUT', '/api/v1/orders/'.$existingOrder->id.'/products', $dataToUpdate)
+            ->seeJson($dataToUpdate);
+    }
+
+    public function testDeleteOrderProduct()
+    {
+        $customer = Customer::factory()->create();
+        
+        $order = Order::factory()->create([
+            'customer_id' => $customer->id
+        ]);
+
+        $this->json('DELETE', '/api/v1/orders/'.$order->id.'/products')
+            ->seeJson(['product removed successfully']);
+        }
 }

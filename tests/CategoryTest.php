@@ -81,14 +81,4 @@ class CategoryTest extends TestCase
         $this->json('POST', '/api/v1/categories/'.$category->id.'/products', ['product_id' => $product->id])
             ->seeJson(['product_id' => $product->id]);
     }
-
-    public function testGetCategoryProducts()
-    {
-        $products = Product::factory()->count(10)->create();
-
-        $category = Category::factory()->create();
-
-        $this->json('GET', '/api/v1/categories/'.$category->id.'/products')
-            ->seeJson([$products->id]);
-    }
 }
