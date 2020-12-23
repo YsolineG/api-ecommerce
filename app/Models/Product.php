@@ -8,7 +8,7 @@ use Illuminate\Database\Eloquent\Model;
 class Product extends Model {
     use HasFactory;
 
-    protected $fillable = ['name', 'price', 'description', 'stock'];
+    protected $fillable = ['name', 'price', 'description', 'stock', 'image'];
 
     protected $casts = [
         'price' => 'float'

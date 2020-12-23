@@ -26,7 +26,9 @@ class ProductTest extends TestCase
             'name' =>'Amoung Us', 
             'description' => 'jeu multijoueur', 
             'price' => 4, 
-            'stock' => 2
+            'stock' => 2,
+            'image' => 'C:\Users\Ysoline\Documents\Dev\site e-commerce\images\amoungus.jpg'
+
         ];
 
         $this->json('POST', '/api/v1/products', $product)
@@ -52,7 +54,8 @@ class ProductTest extends TestCase
             'name' => 'new product name',
             'description' => 'new product description',
             'price' => 20,
-            'stock' => 40
+            'stock' => 40,
+            'image' => 'C:\Users\Ysoline\Documents\Dev\site e-commerce\images\justdance.jpg'
         ];
         
         $this->json('PUT', '/api/v1/products/'. $existingProduct->id, $dataToUpdate)  

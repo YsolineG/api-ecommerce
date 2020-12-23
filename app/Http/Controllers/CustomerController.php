@@ -15,7 +15,7 @@ class CustomerController extends Controller
      */
     public function index()
     {
-     
+
      $customers = Customer::all();
 
      return response()->json($customers);
@@ -28,8 +28,8 @@ class CustomerController extends Controller
         $this->validate($request, [
             'name' => 'required|max:100',
             'firstname' => 'required|max:100',
-            'email'=> 'required|unique:customers|max:100',
-            'adress' => 'required|max:255',
+            'email'=> 'required|max:100',
+            'address' => 'required|max:255',
         ]);
 
         $customers = new Customer;
@@ -37,7 +37,7 @@ class CustomerController extends Controller
         $customers->name= $request->name;
         $customers->firstname= $request->firstname;
         $customers->email= $request->email;
-        $customers->adress= $request->adress;
+        $customers->address= $request->address;
 
         $customers->save();
 
@@ -52,7 +52,7 @@ class CustomerController extends Controller
     }
 
     public function update(Request $request, $id)
-    { 
+    {
         $customers= Customer::find($id);
 
         if ($customers === null) {
@@ -75,16 +75,16 @@ class CustomerController extends Controller
 
         if(!empty($request->email)){
             $this->validate($request, [
-                'email' => 'required|unique:customers|max:100'
+                'email' => 'required|max:100'
             ]);
             $customers->email = $request->email;
         }
 
-        if(!empty($request->adress)){
+        if(!empty($request->address)){
             $this->validate($request, [
-                'adress' => 'required|max:255'
+                'address' => 'required|max:255'
             ]);
-            $customers->adress = $request->adress;
+            $customers->address = $request->address;
         }
 
         $customers->save();

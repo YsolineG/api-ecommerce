@@ -5,7 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\Product;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
-
+use Illuminate\Database\Eloquent\Builder;
 
 class ProductController extends Controller
 {
@@ -14,10 +14,25 @@ class ProductController extends Controller
      *
      * @return void
      */
-    public function index()
+    public function index(Request $request)
     {
-     
-     $products = Product::paginate(15);
+
+        // récupérer le paramètre passer en query category_id
+        $category_id = $request->input('category_id');
+      
+        // récupérer les produits qui appartiennent à la Category category_id
+        $products = [];
+
+        if($category_id !== null){
+            $products = Product::whereHas('categories', function(Builder $query) use($category_id) {
+                    $query->where('categories.id', '=', $category_id);
+            })->paginate(15);
+        }
+        else {
+            $products = Product::paginate(15);
+        }
+
+        
 
      return response()->json($products);
 
@@ -30,7 +45,8 @@ class ProductController extends Controller
             'name' => 'required|unique:products|max:100',
             'price' => 'required|digits_between:0,2',
             'description' => 'required|max:255',
-            'stock' => 'required|integer'
+            'stock' => 'required|integer',
+            'image'=> 'required'
         ]);
 
         $product = new Product;
@@ -39,6 +55,7 @@ class ProductController extends Controller
         $product->price = $request->price;
         $product->description= $request->description;
         $product->stock= $request->stock;
+        $product->image= $request->image;
 
         $product->save();
 
@@ -93,6 +110,13 @@ class ProductController extends Controller
                 'stock' => 'required|integer',
             ]);
             $product->stock = $request->stock;
+        }
+
+        if(!empty($request->image)){
+            $this->validate($request, [
+                'image' => 'required',
+            ]);
+            $product->image = $request->image;
         }
 
         $product->save();

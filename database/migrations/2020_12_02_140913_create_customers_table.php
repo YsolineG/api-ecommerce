@@ -19,8 +19,7 @@ class CreateCustomersTable extends Migration
             $table->string('name');
             $table->string('firstname');
             $table->string('email');
-            $table->unique('email');
-            $table->longText('adress');
+            $table->longText('address');
             $table->timestamps();
         });
     }
