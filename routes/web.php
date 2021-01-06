@@ -12,6 +12,9 @@
 | and give it the Closure to call when that URI is requested.
 |
 */
+$router->get('/phpinfo', function () use ($router) {
+    return phpinfo();
+});
 
 $router->get('/', function () use ($router) {
     return $router->app->version();

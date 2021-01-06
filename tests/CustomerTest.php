@@ -25,7 +25,7 @@ class CustomerTest extends TestCase
             'name' => 'Ganster',
             'firstname' => 'Ysoline',
             'email' => 'ysoline.ganster@gmail.com',
-            'adress' => 'Reims'
+            'address' => 'Reims'
         ];
 
        $this->json('POST', '/api/v1/customers', $customer)
@@ -51,7 +51,7 @@ class CustomerTest extends TestCase
             'name'=>'New customer name',
             'firstname'=>'New customer firstname',
             'email'=>'newcustomeremail@gmail.com',
-            'adress'=>'New customer adress'
+            'address'=>'New customer address'
         ];
 
         $this->json('PUT', '/api/v1/customers/'. $existingCustomer->id, $dataToUpdate)  

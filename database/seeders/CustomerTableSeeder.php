@@ -19,7 +19,7 @@ class CustomerTableSeeder extends Seeder
             'name' => Str::random(10),
             'firstname' => Str::random(10),
             'email' => Str::random(20).'gmail.com',
-            'adress' => Str::random(60)
+            'address' => Str::random(60)
         ]);
     }
 }
